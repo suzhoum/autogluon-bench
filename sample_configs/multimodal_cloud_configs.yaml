@@ -1,14 +1,14 @@
 # Infra configurations
 cdk_context:  # AWS infra configs used to setup AWS Batch environment with AWS CDK
-  CDK_DEPLOY_ACCOUNT: dummy  # required, update with your AWS account
-  CDK_DEPLOY_REGION: dummy  # required, update with your desired region
+  CDK_DEPLOY_ACCOUNT: 097403188315  # required, update with your AWS account
+  CDK_DEPLOY_REGION: us-west-2  # required, update with your desired region
   PREFIX: ag-bench  # Used to identify infra resources created, optional, default = ag-bench
   METRICS_BUCKET: autogluon-benchmark-metrics  # required, has to be a globally unique name
-  # DATA_BUCKET: existing-s3-bucket  # optional, S3 bucket to download your private datasets
-  # MAX_MACHINE_NUM: 20   # optional
-  # BLOCK_DEVICE_VOLUME: 100   # optional
+  DATA_BUCKET: automl-mm-bench  # optional, S3 bucket to download your private datasets
+  MAX_MACHINE_NUM: 26   # optional
+  BLOCK_DEVICE_VOLUME: 300   # optional
   # RESERVED_MEMORY_SIZE: 15000  # optional
-  # INSTANCE: g4dn.2xlarge  # optional
+  INSTANCE: g4dn.12xlarge  # optional
   # VPC_NAME: existing-vpc-name  # optional
 
 # Benchmark configurations
@@ -23,15 +23,44 @@ module_configs:
     git_uri#branch: # required
       - https://github.com/autogluon/autogluon#master
     dataset_name:  # required
-      - shopee
-      - stanford_online
-    presets:  # optional
-      - medium_quality
-      - high_quality
-    time_limit:  # optional
-      - 10
+      - cifar10
+      - cifar100
+      - caltech256
+      - OxfordIIITPet
+      - sun397
+      - mnist
+      - bayer
+      - belgalogos
+      - cub200
+      - describabletextures
+      - europeanflooddepth
+      - fgvc_aircrafts
+      - food101
+      - ifood
+      - kindle
+      - magnetictiledefects
+      - malariacellimages
+      - mit67
+      - nike
+      - nwpu_resisc45
+      - opensurfacesminc2500
+      - oxfordflowers
+      - redfin
+      - semartschool
+      - stanfordcars
+      - stanforddogs
+    # presets:  # optional
+    #   - medium_quality
+    #   - high_quality
+    time_limit:
+      - 600
     hyperparameters:  # optional
-      - optimization.max_epochs: 2
-        optimization.learning_rate: 0.005
-      - optimization.max_epochs: 5
-        optimization.learning_rate: 0.0005
+      - env.per_gpu_batch_size: 32
+        optimization.max_epochs: 10
+        optimization.learning_rate: 1.0e-4
+        optimization.optim_type: adamw
+        optimization.weight_decay: 1.0e-3
+        model.timm_image.checkpoint_name: swin_base_patch4_window7_224
+        optimization.top_k_average_method: best
+        optimization.val_check_interval: 1.0
+        optimization.skip_final_val: true

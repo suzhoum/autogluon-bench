@@ -6,10 +6,12 @@ root_dir: .ag_bench_runs  # optional, default = ".ag_bench_runs"
 # METRICS_BUCKET: autogluon-benchmark-metrics  # optional, required only if you want to upload metrics to S3
 
 # Multimodal specific
-git_uri#branch: https://github.com/autogluon/autogluon#master  # required
-dataset_name: melbourne_airbnb  # required
-presets: medium_quality  # optional
+git_uri#branch: https://github.com/autogluon/autogluon#master
+dataset_name:  mit67
 hyperparameters:  # optional
-  optimization.learning_rate: 0.0005
-  optimization.max_epochs: 5
-time_limit: 10  # optional
+    env.per_gpu_batch_size: 32
+    optimization.max_epochs: 10
+    optimization.learning_rate: 1.0e-4
+    optimization.optim_type: adamw
+    optimization.weight_decay: 1.0e-3
+    model.timm_image.checkpoint_name: swin_base_patch4_window7_224
