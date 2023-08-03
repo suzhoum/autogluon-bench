@@ -34,8 +34,8 @@ classifiers = [
 ]
 dependencies = [
     "autogluon.common >=0.7,<1.0",
-    "aws-cdk-lib >=2.0.0,<2.70.0",
-    "aws-cdk.aws-batch-alpha >=2.0.0a1,<2.70.0a0",
+    "aws-cdk-lib >=2.0.0,<=2.92.0",
+    "aws-cdk.aws-batch-alpha >=2.0.0a1,<=2.92.0a0",
     "awscliv2 >=2.2.0,<2.3.0",
     "boto3 >=1.26.0,<1.28.0",
     "constructs >=10.0.0,<10.1.289",

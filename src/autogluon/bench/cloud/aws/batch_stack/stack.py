@@ -4,7 +4,7 @@ import importlib.resources
 import logging
 import os
 
-import aws_cdk as core
+import aws_cdk as cdk
 import boto3
 from aws_cdk import aws_batch_alpha as batch
 from aws_cdk import aws_ec2 as ec2
@@ -31,7 +31,7 @@ with importlib.resources.path("autogluon.bench.cloud.aws.batch_stack.lambdas", "
 logger = logging.getLogger(__name__)
 
 
-class StaticResourceStack(core.Stack):
+class StaticResourceStack(cdk.Stack):
     """
     Defines a stack for creating and importing static resources, such as S3 buckets and VPCs.
     """
@@ -57,7 +57,7 @@ class StaticResourceStack(core.Stack):
                 self,
                 bucket_name,
                 bucket_name=bucket_name,
-                removal_policy=core.RemovalPolicy.RETAIN,
+                removal_policy=cdk.RemovalPolicy.RETAIN,
             )
         return bucket
 
@@ -86,7 +86,7 @@ class StaticResourceStack(core.Stack):
         self.vpc = ec2.Vpc.from_lookup(self, f"{self.prefix}-vpc", vpc_name=self.vpc_name) if self.vpc_name else None
 
 
-class BatchJobStack(core.Stack):
+class BatchJobStack(cdk.Stack):
     def __init__(self, scope: Construct, id: str, static_stack: StaticResourceStack, **kwargs) -> None:
         """
         Defines a stack with the following:
@@ -161,7 +161,7 @@ class BatchJobStack(core.Stack):
             self,
             f"{prefix}-ecr-docker-image-asset",
             directory=docker_base_dir,
-            follow_symlinks=core.SymlinkFollowMode.ALWAYS,
+            follow_symlinks=cdk.SymlinkFollowMode.ALWAYS,
             build_args={
                 "AG_BENCH_BASE_IMAGE": os.environ["AG_BENCH_BASE_IMAGE"],
                 "AG_BENCH_VERSION": os.getenv("AG_BENCH_VERSION", "latest"),
@@ -178,26 +178,37 @@ class BatchJobStack(core.Stack):
 
         docker_container_image = ecs.ContainerImage.from_docker_image_asset(docker_image_asset)
 
-        container = batch.JobDefinitionContainer(
+        container=batch.EcsEc2ContainerDefinition(self, "containerDefn",
             image=docker_container_image,
-            gpu_count=container_gpu,
-            vcpus=container_vcpu,
-            memory_limit_mib=container_memory,
-            # Bug that this parameter is not rending in the CF stack under cdk.out
-            # https://github.com/aws/aws-cdk/issues/13023
-            linux_params=ecs.LinuxParameters(self, f"{prefix}-linux_params", shared_memory_size=container_memory),
+            gpu=container_gpu,
+            cpu=container_vcpu,
+            memory=cdk.Size.mebibytes(container_memory),
+            linux_parameters=batch.LinuxParameters(self, f"{prefix}-linux_params", shared_memory_size=cdk.Size.mebibytes(container_memory)),
             environment={
                 "AG_BENCH_VERSION": os.getenv("AG_BENCH_VERSION", "latest"),
                 "AG_BENCH_DEV_URL": os.getenv("AG_BENCH_DEV_URL", ""),
             },
         )
+        # container = batch.JobDefinitionContainer(
+        #     image=docker_container_image,
+        #     gpu_count=container_gpu,
+        #     vcpus=container_vcpu,
+        #     memory_limit_mib=container_memory,
+        #     # Bug that this parameter is not rending in the CF stack under cdk.out
+        #     # https://github.com/aws/aws-cdk/issues/13023
+        #     linux_params=ecs.LinuxParameters(self, f"{prefix}-linux_params", shared_memory_size=container_memory),
+        #     environment={
+        #         "AG_BENCH_VERSION": os.getenv("AG_BENCH_VERSION", "latest"),
+        #         "AG_BENCH_DEV_URL": os.getenv("AG_BENCH_DEV_URL", ""),
+        #     },
+        # )
 
-        job_definition = batch.JobDefinition(
+        job_definition = batch.EcsJobDefinition(
             self,
             "job-definition",
             container=container,
             retry_attempts=3,
-            timeout=core.Duration.minutes(time_limit),
+            timeout=cdk.Duration.minutes(time_limit),
         )
 
         # LaunchTemplate.launch_template_name returns Null https://github.com/aws/aws-cdk/issues/19405
@@ -252,31 +263,25 @@ class BatchJobStack(core.Stack):
         batch_instance_profile = InstanceProfile(self, f"{prefix}-instance-profile", prefix=prefix)
         batch_instance_profile.attach_role(batch_instance_role)
 
-        compute_environment = batch.ComputeEnvironment(
+        compute_environment = batch.ManagedEc2EcsComputeEnvironment(
             self,
             f"{prefix}-compute-environment",
-            compute_resources=batch.ComputeResources(
-                allocation_strategy=batch.AllocationStrategy.BEST_FIT_PROGRESSIVE,
-                vpc=vpc,
-                vpc_subnets=ec2.SubnetSelection(subnets=vpc.private_subnets),
-                # vpc_subnets=ec2.SubnetSelection(subnets=vpc.public_subnets),  # use public subnet for ssh
-                maxv_cpus=compute_env_maxv_cpus,
-                instance_role=batch_instance_profile.profile_arn,
-                instance_types=instances,
-                security_groups=[sg],
-                type=batch.ComputeResourceType.ON_DEMAND,
-                # ec2_key_pair=f"{prefix}-perm-key", # set this if you need ssh into instance
-                launch_template=batch.LaunchTemplateSpecification(
-                    launch_template_name=batch_launch_template_name  # LaunchTemplate.launch_template_name returns None
-                ),
-            ),
+            allocation_strategy=batch.AllocationStrategy.BEST_FIT_PROGRESSIVE,
+            vpc=vpc,
+            vpc_subnets=ec2.SubnetSelection(subnets=vpc.private_subnets),
+            # vpc_subnets=ec2.SubnetSelection(subnets=vpc.public_subnets),  # use public subnet for ssh
+            maxv_cpus=compute_env_maxv_cpus,
+            instance_role=batch_instance_role,
+            instance_types=instances,
+            security_groups=[sg],
+            launch_template=launch_template,
         )
 
         job_queue = batch.JobQueue(
             self,
             f"{prefix}-job-queue",
             priority=1,
-            compute_environments=[batch.JobQueueComputeEnvironment(compute_environment=compute_environment, order=1)],
+            compute_environments=[batch.OrderedComputeEnvironment(compute_environment=compute_environment, order=1)],
         )
 
         lambda_function = BatchLambdaFunction(
@@ -296,16 +301,16 @@ class BatchJobStack(core.Stack):
         metrics_bucket.grant_read_write(lambda_function._lambda_function)
 
         # Output the ARN for manually updating tagging
-        core.CfnOutput(
+        cdk.CfnOutput(
             self,
             "ComputeEnvironmentARN",
             value=compute_environment.compute_environment_arn,
         )
-        core.CfnOutput(self, "JobQueueARN", value=job_queue.job_queue_arn)
-        core.CfnOutput(self, "JobDefinitionARN", value=job_definition.job_definition_arn)
-        core.CfnOutput(
+        cdk.CfnOutput(self, "JobQueueARN", value=job_queue.job_queue_arn)
+        cdk.CfnOutput(self, "JobDefinitionARN", value=job_definition.job_definition_arn)
+        cdk.CfnOutput(
             self,
             "EcrRepositoryName",
             value=docker_image_asset.repository.repository_name,
         )
-        core.CfnOutput(self, "ImageUri", value=docker_image_asset.image_uri)
+        cdk.CfnOutput(self, "ImageUri", value=docker_image_asset.image_uri)

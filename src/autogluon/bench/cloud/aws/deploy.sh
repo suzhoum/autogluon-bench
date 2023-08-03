@@ -50,5 +50,5 @@ cdk deploy --app $CDK_PATH $STATIC_RESOURCE_STACK_NAME --require-approval never
 cdk deploy --app $CDK_PATH $BATCH_STACK_NAME --require-approval never
 
 # Workaround for lack of support from CDK
-update_shm_size
-update_batch_tags
+# update_shm_size
+# update_batch_tags
