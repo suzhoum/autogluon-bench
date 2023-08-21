@@ -40,24 +40,6 @@ class BatchLambdaFunction(Construct):
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaBasicExecutionRole")
             ],
-            inline_policies={
-                "SubmitBatchForLambda": iam.PolicyDocument(
-                    statements=[
-                        iam.PolicyStatement(
-                            resources=[
-                                f"arn:aws:batch:{aws_account_region}:{aws_account_id}:job-definition/*",
-                                f"arn:aws:batch:{aws_account_region}:{aws_account_id}:job-queue/*",
-                            ],
-                            conditions={
-                                "StringEquals": {
-                                    f"aws:ResourceTag/{prefix}": tag  # resources with tag, e.g. {"automm": "vision"}
-                                }
-                            },
-                            actions=["batch:SubmitJob"],
-                        )
-                    ]
-                )
-            },
         )
 
         self._lambda_function = _lambda.Function(

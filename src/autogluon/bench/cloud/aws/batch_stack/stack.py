@@ -299,6 +299,7 @@ class BatchJobStack(cdk.Stack):
             },
         )
         metrics_bucket.grant_read_write(lambda_function._lambda_function)
+        job_definition.grant_submit_job(lambda_function._lambda_function_role, job_queue)
 
         # Output the ARN for manually updating tagging
         cdk.CfnOutput(

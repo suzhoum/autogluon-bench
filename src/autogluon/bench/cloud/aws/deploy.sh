@@ -48,6 +48,7 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 echo "Running CDK deploy"
 cdk deploy --app $CDK_PATH $STATIC_RESOURCE_STACK_NAME --require-approval never
 cdk deploy --app $CDK_PATH $BATCH_STACK_NAME --require-approval never
+cdk diff --app $CDK_PATH $BATCH_STACK_NAME
 
 # Workaround for lack of support from CDK
 # update_shm_size
