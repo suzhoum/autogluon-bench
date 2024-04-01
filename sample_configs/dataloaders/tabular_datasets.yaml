@@ -1,0 +1,156 @@
+base: &base
+  url: s3://zs-datasets/{name}/{split}.csv
+  test_split_name: test
+  splits:
+    - train
+    - test
+  label_columns:
+    - y
+  metric: acc
+  problem_type: multiclass
+  columns_to_drop:
+
+
+nyc-albert:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+nyc-dilbert:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+nyc-dionis:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+nyc-mlg-ulb-creditcardfraud:
+  <<: *base
+  roblem_type: binary
+  metric: f1
+
+
+nyc-p53mutants:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+nyc-record2vec_plugs:
+  <<: *base
+  problem_type: binary
+  metric: f1
+    
+
+nyc-robert:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+op100-168338:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+large-codes-5gb:
+  <<: *base
+
+
+large-criteo-kaggle-5gb:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+openml-3020:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+aa-alster-books-nov21:
+  <<: *base
+    
+
+aa-record2vec-plugs:
+  <<: *base
+
+nyc-wendykan-lending-club-loan-data:
+  <<: *base
+
+
+op100-146825:
+  <<: *base
+
+op100-167121:
+  <<: *base
+
+
+op100-167130:
+  <<: *base
+
+
+openml-3573:
+  <<: *base
+
+
+fmnist-5gb:
+  <<: *base
+
+
+aa-burakhmmtgl-energy-molecule:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+aa-leaderboard278:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+aa-leaderboard343:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+large-big-claims-severity-5:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+
+large-reddit-score-5gb:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+comp-mercari-price-suggestion-challenge:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+
+big-deloitte-ml-5:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+
+large-taxifare-5gb:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+
+large-lendingc-5gb:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+
+

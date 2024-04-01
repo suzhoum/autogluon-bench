@@ -1,14 +1,45 @@
-frameworks:              # configuration namespace for the frameworks definitions.
-  definition_file:       # list of yaml files describing the frameworks base definitions.
+# put this file in custom input dir or in ~/.config/automlbenchmark directory
+# in order to have a custom setup, allowing to add custom frameworks definitions (in our case, creating a benchmark for various H2O versions)
+---
+
+input_dir: '{user}/data'   # change the default input directory (where data files are loaded and/or downloaded).
+
+frameworks:
+  definition_file:  # this allows to add custom framework definitions (in {user}/frameworks.yaml) on top of the default ones.
     - '{root}/resources/frameworks.yaml'
     - '{user}/frameworks.yaml'
+
   allow_duplicates: true     # if true, the last definition is used.
   tags: ['stable', 'latest', '2020Q2', '2021Q3', '2023Q2', 'example']  # the list of supported tags when looking up frameworks:
-                              # for example frmwk:latest will look for framework frmwk in a frameworks_latest.yaml file if present.
-benchmarks:                     # configuration namespace for the benchmarks definitions.
-  definition_dir:               
-    - '{root}/resources/benchmarks'
+
+benchmarks:
+  definition_dir:  # this allows to add custom benchmark definitions (under {user}/benchmarks) to the default ones.
     - '{user}/benchmarks'
-  constraints_file:             # list of yaml files describing the benchmarks runtime constraints.
+    - '{root}/resources/benchmarks'
+  constraints_file: # this allows to add custom constraint definitions (in {user}/constraints.yaml) on top of the default ones.
     - '{root}/resources/constraints.yaml'
     - '{user}/constraints.yaml'
+  overhead_time_seconds: 14400
+  overhead_time_multiplier: 5
+  metrics:                      # default metrics by dataset type (as listed by amlb.data.DatasetType),
+                                # only the first metric is optimized by the frameworks,
+                                # the others are computed only for information purpose.
+    binary: ['f1']     # available metrics: auc (AUC), acc (Accuracy), balacc (Balanced Accuracy), pr_auc (Precision Recall AUC), logloss (Log Loss), f1, f2, f05 (F-beta scores with beta=1, 2, or 0.5), max_pce, mean_pce (Max/Mean Per-Class Error).
+    multiclass: ['acc']        # available metrics: same as for binary, except auc, replaced by auc_ovo (AUC One-vs-One), auc_ovr (AUC One-vs-Rest). AUC metrics and F-beta metrics are computed with weighted average.
+    regression: ['r2']               # available metrics: mae (Mean Absolute Error), mse (Mean Squared Error), msle (Mean Squared Logarithmic Error), rmse (Root Mean Square Error), rmsle (Root Mean Square Logarithmic Error), r2 (R^2).
+
+
+aws:
+  resource_files:  # this allows to automatically upload custom config + frameworks to the running instance (benchmark files are always uploaded).
+    - '{user}/config.yaml'
+    - '{user}/frameworks.yaml'
+    - '{user}/constraints.yaml'
+    - '{user}/benchmarks'
+    - '{user}/extensions'
+
+  ec2:
+    instance_type:
+      series: t3
+  use_docker: false  # you can decide to always use the prebuilt docker images on AWS.
+
+  overhead_time_seconds: 14400
