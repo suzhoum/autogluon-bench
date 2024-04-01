@@ -4,17 +4,55 @@ import importlib
 import json
 import logging
 import os
+import pandas as pd
 import time
 from datetime import datetime
 from typing import Optional, Union
+import zipfile
+import itertools
 
 from autogluon.bench.datasets.dataset_registry import multimodal_dataset_registry
 from autogluon.core.metrics import make_scorer
+from autogluon.core.utils.savers import save_pkl
 from autogluon.tabular import TabularPredictor
 from autogluon.tabular import __version__ as ag_version
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+def normalize_path(path):
+    return os.path.realpath(os.path.expanduser(path))
+
+def walk_apply(dir_path, apply, topdown=True, max_depth=-1, filter_=None):
+    dir_path = normalize_path(dir_path)
+    for dir, subdirs, files in os.walk(dir_path, topdown=topdown):
+        if max_depth >= 0:
+            depth = 0 if dir == dir_path else len(str.split(os.path.relpath(dir, dir_path), os.sep))
+            if depth > max_depth:
+                continue
+        for p in itertools.chain(files, subdirs):
+            path = os.path.join(dir, p)
+            if filter_ is None or filter_(path):
+                apply(path, isdir=(p in subdirs))
+
+def zip_path(path, dest_archive, compression=zipfile.ZIP_DEFLATED, arc_path_format='short', filter_=None):
+    path = normalize_path(path)
+    if not os.path.exists(path): return
+    with zipfile.ZipFile(dest_archive, 'w', compression) as zf:
+        if os.path.isfile(path):
+            in_archive = os.path.basename(path)
+            zf.write(path, in_archive)
+        elif os.path.isdir(path):
+            def add_to_archive(file, isdir):
+                if isdir: return
+                in_archive = (os.path.relpath(file, path) if arc_path_format == 'short'
+                              else os.path.relpath(file, os.path.dirname(path)) if arc_path_format == 'long'
+                              else os.path.basename(file) is arc_path_format == 'flat'
+                              )
+                zf.write(file, in_archive)
+            walk_apply(path, add_to_archive,
+                       filter_=lambda p: (filter_ is None or filter_(p)) and not os.path.samefile(dest_archive, p))
+
 
 
 def _flatten_dict(data):
@@ -44,6 +82,7 @@ def get_args():
         "--custom_dataloader", type=str, default=None, help="Custom dataloader to use in the benchmark."
     )
     parser.add_argument("--custom_metrics", type=str, default=None, help="Custom metrics to use in the benchmark.")
+    parser.add_argument("--time_limit", type=int, default=None, help="Time limit used to fit the predictor.")
 
     args = parser.parse_args()
     return args
@@ -148,6 +187,7 @@ def run(
     params: Optional[dict] = None,
     custom_dataloader: Optional[dict] = None,
     custom_metrics: Optional[dict] = None,
+    time_limit: Optional[int] = None,
 ):
     """Runs the AutoGluon multimodal benchmark on a given dataset.
 
@@ -194,12 +234,23 @@ def run(
         "eval_metric": train_data.metric
     }
 
-    print("~~~~~~~", train_data.metric)
+    if time_limit is not None:
+        params["time_limit"] = time_limit
+        logger.warning(
+            f'params["time_limit"] is being overriden by time_limit specified in constraints.yaml. params["time_limit"] = {time_limit}'
+        )
+
     metrics_func = None
     if custom_metrics is not None and custom_metrics["function_name"] == train_data.metric:
         metrics_func = load_custom_metrics(custom_metrics=custom_metrics)
 
     predictor = TabularPredictor(**predictor_args)
+
+    ### leaderboard
+    _leaderboard_extra_info = params.pop('_leaderboard_extra_info', False)  # whether to get extra model info (very verbose)
+    _leaderboard_test = params.pop('_leaderboard_test', False)  # whether to compute test scores in leaderboard (expensive)
+    artifacts = params.pop('_save_artifacts', ['leaderboard'])
+    leaderboard_kwargs = dict(extra_info=_leaderboard_extra_info)
 
     fit_args = {"train_data": train_data.data, "tuning_data": val_data.data, **params}
 
@@ -225,6 +276,12 @@ def run(
         end_time = time.time()
         predict_duration = round(end_time - start_time, 1)
 
+        if _leaderboard_test:
+            leaderboard_kwargs['data'] = test_data.data
+        leaderboard = predictor.leaderboard(**leaderboard_kwargs)
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', 1000):
+            logger.info(leaderboard)
+
         if "#" in framework:
             framework, version = framework.split("#")
         else:
@@ -248,6 +305,22 @@ def run(
         subdir = f"{framework}.{dataset_name}.{constraint}.local"
         save_metrics(os.path.join(metrics_dir, subdir, "scores"), metrics)
 
+        if 'leaderboard' in artifacts:
+            leaderboard_dir = os.path.join(metrics_dir, subdir, "leaderboard")
+            os.makedirs(leaderboard_dir, exist_ok=True)
+            leaderboard.to_csv(os.path.join(leaderboard_dir, "leaderboard.csv"))
+
+        if 'info' in artifacts:
+            info_dir = os.path.join(metrics_dir, subdir, "info")
+            os.makedirs(info_dir, exist_ok=True)
+            ag_info = predictor.info()
+            save_pkl.save(path=os.path.join(info_dir, "info.pkl"), object=ag_info)
+
+        if 'models' in artifacts:
+            models_dir = os.path.join(metrics_dir, subdir, "models")
+            os.makedirs(models_dir, exist_ok=True)
+            zip_path(predictor.path, os.path.join(models_dir, "models.zip"))
+
 
 if __name__ == "__main__":
     args = get_args()
@@ -267,4 +340,5 @@ if __name__ == "__main__":
         params=args.params,
         custom_dataloader=args.custom_dataloader,
         custom_metrics=args.custom_metrics,
+        time_limit=args.time_limit,
     )
