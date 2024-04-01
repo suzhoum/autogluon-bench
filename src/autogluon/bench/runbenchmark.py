@@ -33,7 +33,7 @@ app = typer.Typer()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 AMLB_DEPENDENT_MODULES = ["tabular", "timeseries"]
-INDEPENDENT_MODULES = ["multimodal"]
+INDEPENDENT_MODULES = ["multimodal", "tabular_reg"]
 
 with importlib.resources.path("autogluon.bench", "Dockerfile") as docker_file:
     project_path = os.path.join(os.path.dirname(docker_file))
