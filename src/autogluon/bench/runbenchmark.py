@@ -19,6 +19,7 @@ from autogluon.bench.cloud.aws.stack_handler import deploy_stack, destroy_stack
 from autogluon.bench.eval.hardware_metrics.hardware_metrics import get_hardware_metrics
 from autogluon.bench.frameworks.multimodal.multimodal_benchmark import MultiModalBenchmark
 from autogluon.bench.frameworks.tabular.tabular_benchmark import TabularBenchmark
+from autogluon.bench.frameworks.tabular_reg.tabular_reg_benchmark import TabularRegBenchmark
 from autogluon.bench.frameworks.timeseries.timeseries_benchmark import TimeSeriesBenchmark
 from autogluon.bench.utils.general_utils import (
     download_dir_from_s3,
@@ -110,6 +111,7 @@ def run_benchmark(
 
     module_to_benchmark = {
         "multimodal": MultiModalBenchmark,
+        "tabular_reg": TabularRegBenchmark,
         "tabular": TabularBenchmark,
         "timeseries": TimeSeriesBenchmark,
     }
