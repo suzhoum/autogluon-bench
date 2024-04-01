@@ -1,0 +1,61 @@
+# Infra configurations
+cdk_context:  # AWS infra configs used to setup AWS Batch environment with AWS CDK
+  CDK_DEPLOY_ACCOUNT: 972965043981  # required, update with your AWS account
+  CDK_DEPLOY_REGION: us-west-2  # required, update with your desired region
+  PREFIX: ag-bench  # Used to identify infra resources created, optional, default = ag-bench
+  METRICS_BUCKET: zs-benchmarks  # required, has to be a globally unique name
+  DATA_BUCKET: zs-datasets  # optional, S3 bucket to download your private datasets
+  # MAX_MACHINE_NUM: 20   # optional, default 20
+  # BLOCK_DEVICE_VOLUME: 100   # optional, default 100GB
+  # RESERVED_MEMORY_SIZE: 15000  # optional, default 15000MB
+  # VPC_NAME: existing-vpc-name  # optional
+
+module: tabular_reg  # required
+mode: aws  # required
+benchmark_name: ag_bench  # required
+root_dir: ag_bench_runs  # optional, default = "ag_bench_runs"
+
+constraint: 48c30m  # configurations will override cdk_context, options can be found at resources/multimodal_constraints.yaml, custom constraint is also supported, default: test
+framework: AutoGluon_mq  # framework options can be found at resources/multimodal_frameworks.yaml, custom framework is also supported.
+dataset_name:  # required
+  -  nyc-albert
+  -  nyc-dilbert
+  -  nyc-dionis
+  -  nyc-mlg-ulb-creditcardfraud
+  -  nyc-p53mutants
+  -  nyc-record2vec_plugs
+  -  nyc-robert
+  -  op100-168338
+  -  large-codes-5gb
+  -  large-criteo-kaggle-5gb
+  -  openml-3020
+  -  aa-alster-books-nov21
+  -  aa-record2vec-plugs
+  -  nyc-wendykan-lending-club-loan-data
+  -  op100-146825
+  -  openml-167121
+  -  openml-167130
+  -  openml-3573
+  -  fmnist-5gb
+  -  aa-burakhmmtgl-energy-molecule
+  -  aa-leaderboard278
+  -  aa-leaderboard343
+  -  large-big-claims-severity-5
+  -  large-reddit-score-5gb
+  -  comp-mercari-price-suggestion-challenge
+  -  big-deloitte-ml-5
+  -  large-taxifare-5gb
+  -  large-lendingc-5gb
+### Customizations ####
+custom_resource_dir: sample_configs/resources/  # path to custom multimodal_constraints.yaml and multimodal_frameworks.yaml
+custom_dataloader:
+    dataloader_file: sample_configs/dataloaders/tabular_dataloader.py   # relative path to WORKDIR
+    class_name: TabularDataLoader
+    dataset_config_file: sample_configs/dataloaders/tabular_datasets.yaml 
+
+# custom_metrics:
+#     metrics_path: sample_configs/custom_metrics/sample_metrics.py
+#     function_name: f1_score
+#     # Other optional parameters can be set, ref: https://auto.gluon.ai/stable/tutorials/tabular/advanced/tabular-custom-metric.html
+#     optimum: 1
+#     greater_is_better: true

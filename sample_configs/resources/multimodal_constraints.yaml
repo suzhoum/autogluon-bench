@@ -1,6 +1,46 @@
+base: &base
+  INSTANCE: m5.12xlarge
+  MAX_MACHINE_NUM: 1000
+  BLOCK_DEVICE_VOLUME: 3000
+  RESERVED_MEMORY_SIZE: 8000
+
 10m4x:
   TIME_LIMIT: 100
   INSTANCE: g4dn.4xlarge
   # MAX_MACHINE_NUM: 20   # optional, default 20
   # BLOCK_DEVICE_VOLUME: 100   # optional, default 100GB
   # RESERVED_MEMORY_SIZE: 15000  # optional, default 15000MB
+
+48c15m:
+  <<: *base
+  TIME_LIMIT: 400
+
+48c30m:
+  <<: *base
+  TIME_LIMIT: 1800
+
+48c45m:
+  <<: *base
+  TIME_LIMIT: 2700
+
+48c60m:
+  <<: *base
+  TIME_LIMIT: 3600
+
+48c90m:
+  <<: *base
+  TIME_LIMIT: 5400
+
+48c120m:
+  <<: *base
+  TIME_LIMIT: 7200
+
+
+48c720m:
+  <<: *base
+  TIME_LIMIT: 43200
+
+
+48c1440m:
+  <<: *base
+  TIME_LIMIT: 86400

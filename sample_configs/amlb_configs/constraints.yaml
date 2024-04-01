@@ -1,7 +1,41 @@
----
+48c15m:
+  folds: 1
+  max_runtime_seconds: 900
+  cores: 48
+  ec2_instance_type: m5.12xlarge
 
-test101:
-  folds: 3
-  max_runtime_seconds: 600
-  cores: 4
-  min_vol_size_mb: 100000
+48c30m:
+  folds: 1
+  max_runtime_seconds: 1800
+  cores: 48
+  ec2_instance_type: m5.12xlarge
+
+48c45m:
+  folds: 1
+  max_runtime_seconds: 2700
+  cores: 48
+  ec2_instance_type: m5.12xlarge
+
+48c60m:
+  folds: 1
+  max_runtime_seconds: 3600
+  cores: 48
+  ec2_instance_type: m5.12xlarge
+
+48c90m:
+  folds: 1
+  max_runtime_seconds: 5400
+  cores: 48
+  ec2_instance_type: m5.12xlarge
+
+48c120m:
+  folds: 1
+  max_runtime_seconds: 7200
+  cores: 48
+  ec2_instance_type: m5.12xlarge
+
+48c720m:
+  folds: 1
+  max_runtime_seconds: 43200
+  cores: 48
+  ec2_instance_type: m5.12xlarge

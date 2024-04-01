@@ -1,18 +1,127 @@
 ---
 
-#########################
-### AutoML frameworks ###
-#########################
-
 ######### Do Not Remove #########
 AutoGluon:
-  version: "latest"
+  version: "fix_refit_full_crash_oom"
+  repo: "https://github.com/Innixma/autogluon.git"
+  
 ######### Do Not Remove #########
 
 
-AutoGluon_dev:
+AutoGluon_bq:
   extends: AutoGluon
-  repo: https://github.com/autogluon/autogluon.git
-  version: stable_GA4_update  # branch name
-  params:  # TabularPredictor.fit(params)
+  params:
     presets: best_quality
+    dynamic_stacking: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+
+AutoGluon_bq_ds:
+  extends: AutoGluon
+  params:
+    presets: best_quality
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+    
+
+AutoGluon_hq:
+  extends: AutoGluon
+  params:
+    presets: high_quality
+    dynamic_stacking: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+
+AutoGluon_hq_ds:
+  extends: AutoGluon
+  params:
+    presets: high_quality
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+
+AutoGluon_gq:
+  extends: AutoGluon
+  params:
+    presets: good_quality
+    dynamic_stacking: False
+    refit_full: False
+    set_best_to_refit_full: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_gq_ds:
+  extends: AutoGluon
+  params:
+    presets: good_quality
+    refit_full: False
+    set_best_to_refit_full: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+
+AutoGluon_gq_refit:
+  extends: AutoGluon
+  params:
+    presets: good_quality
+    dynamic_stacking: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+  
+
+AutoGluon_gq_refit_ds:
+  extends: AutoGluon
+  params:
+    presets: good_quality
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+
+AutoGluon_mq:
+  extends: AutoGluon
+  params:
+    presets: medium_quality
+    num_bag_sets: 1
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_gq_ds_auto:
+  extends: AutoGluon
+  params:
+    presets: "good_quality"
+    use_bag_holdout: "auto"
+    dynamic_stacking: "auto"
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_hq_ds_auto:
+  extends: AutoGluon
+  params:
+    presets: "high_quality"
+    use_bag_holdout: "auto"
+    dynamic_stacking: "auto"
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+    
+AutoGluon_bq_ds_auto:
+  extends: AutoGluon
+  params:
+    presets: "best_quality"
+    use_bag_holdout: "auto"
+    dynamic_stacking: "auto"
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
