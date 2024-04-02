@@ -1,0 +1,217 @@
+---
+
+- name: nyc-albert   # train file, test files and target set explicitly (no constraint on file names).
+  dataset:
+    train: 's3://zs-datasets/nyc-albert/train.csv'
+    test: 's3://zs-datasets/nyc-albert/test.csv'
+    # train: '{user}/data/nyc-albert/train.csv'
+    # test: '{user}/data/nyc-albert/test.csv'
+    target: y
+    type: binary
+
+
+- name: nyc-dilbert
+  dataset:
+    train: 's3://zs-datasets/nyc-dilbert/train.csv'
+    test: 's3://zs-datasets/nyc-dilbert/test.csv'
+    target: y
+    type: binary
+
+
+- name: nyc-dionis
+  dataset:
+    train: 's3://zs-datasets/nyc-dionis/train.csv'
+    test: 's3://zs-datasets/nyc-dionis/test.csv'
+    target: y
+    type: binary
+
+
+- name: nyc-mlg-ulb-creditcardfraud
+  dataset:
+    train: 's3://zs-datasets/nyc-mlg-ulb-creditcardfraud/train.csv'
+    test: 's3://zs-datasets/nyc-mlg-ulb-creditcardfraud/test.csv'
+    target: y
+    type: binary
+    
+
+- name: nyc-p53mutants
+  dataset:
+    train: 's3://zs-datasets/nyc-p53mutants/train.csv'
+    test: 's3://zs-datasets/nyc-p53mutants/test.csv'
+    target: y
+    type: binary
+    
+
+- name: nyc-record2vec_plugs
+  dataset:
+    train: 's3://zs-datasets/nyc-record2vec_plugs/train.csv'
+    test: 's3://zs-datasets/nyc-record2vec_plugs/test.csv'
+    target: y
+    type: binary
+
+
+- name: nyc-robert
+  dataset:
+    train: 's3://zs-datasets/nyc-robert/train.csv'
+    test: 's3://zs-datasets/nyc-robert/test.csv'
+    target: y
+    type: binary
+
+
+- name: op100-168338
+  dataset:
+    train: 's3://zs-datasets/op100-168338/train.csv'
+    test: 's3://zs-datasets/op100-168338/test.csv'
+    target: y
+    type: binary
+
+- name: large-codes-5gb
+  dataset:
+    train: 's3://zs-datasets/large-codes-5gb/train.csv'
+    test: 's3://zs-datasets/large-codes-5gb/test.csv'
+    target: y
+    type: multiclass
+
+
+- name: large-criteo-kaggle-5gb
+  dataset:
+    train: 's3://zs-datasets/large-criteo-kaggle-5gb/train.csv'
+    test: 's3://zs-datasets/large-criteo-kaggle-5gb/test.csv'
+    target: y
+    type: binary
+
+
+- name: openml-3020
+  dataset:
+    train: 's3://zs-datasets/openml-3020/train.csv'
+    test: 's3://zs-datasets/openml-3020/test.csv'
+    target: y
+    type: binary
+
+    
+- name: aa-alster-books-nov21
+  dataset:
+    train: 's3://zs-datasets/aa-alster-books-nov21/train.csv'
+    test: 's3://zs-datasets/aa-alster-books-nov21/test.csv'
+    target: y
+    type: multiclass
+  
+  
+- name: aa-record2vec-plugs
+  dataset:
+    train: 's3://zs-datasets/aa-alster-books-nov21/train.csv'
+    test: 's3://zs-datasets/aa-alster-books-nov21/test.csv'
+    target: y
+    type: multiclass
+
+- name: nyc-wendykan-lending-club-loan-data
+  dataset:
+    train: 's3://zs-datasets/nyc-wendykan-lending-club-loan-data/train.csv'
+    test: 's3://zs-datasets/nyc-wendykan-lending-club-loan-data/test.csv'
+    target: y
+    type: multiclass
+
+- name: op100-146825
+  dataset:
+    train: 's3://zs-datasets/op100-146825/train.csv'
+    test: 's3://zs-datasets/op100-146825/test.csv'
+    target: y
+    type: multiclass
+
+- name: openml-167121
+  dataset:
+    train: 's3://zs-datasets/openml-167121/train.csv'
+    test: 's3://zs-datasets/openml-167121/test.csv'
+    target: y
+    type: multiclass
+
+- name: openml-167130
+  dataset:
+    train: 's3://zs-datasets/openml-167130/train.csv'
+    test: 's3://zs-datasets/openml-167130/test.csv'
+    target: y
+    type: multiclass
+
+- name: openml-3573
+  dataset:
+    train: 's3://zs-datasets/openml-3573/train.csv'
+    test: 's3://zs-datasets/openml-3573/test.csv'
+    target: y
+    type: multiclass
+
+
+- name: fmnist-5gb
+  dataset:
+    train: 's3://zs-datasets/fmnist-5gb/train.csv'
+    test: 's3://zs-datasets/fmnist-5gb/test.csv'
+    target: y
+    type: multiclass
+    
+
+- name: aa-burakhmmtgl-energy-molecule
+  dataset:
+    train: 's3://zs-datasets/aa-burakhmmtgl-energy-molecule/train.csv'
+    test: 's3://zs-datasets/aa-burakhmmtgl-energy-molecule/test.csv'
+    target: y
+    type: regression
+
+
+- name: aa-leaderboard278
+  dataset:
+    train: 's3://zs-datasets/aa-leaderboard278/train.csv'
+    test: 's3://zs-datasets/aa-leaderboard278/test.csv'
+    target: y
+    type: regression
+
+
+- name: aa-leaderboard343
+  dataset:
+    train: 's3://zs-datasets/aa-leaderboard343/train.csv'
+    test: 's3://zs-datasets/aa-leaderboard343/test.csv'
+    target: y
+    type: regression
+
+- name: large-big-claims-severity-5
+  dataset:
+    train: 's3://zs-datasets/large-big-claims-severity-5/train.csv'
+    test: 's3://zs-datasets/large-big-claims-severity-5/test.csv'
+    target: y
+    type: regression
+
+- name: large-reddit-score-5gb
+  dataset:
+    train: 's3://zs-datasets/large-reddit-score-5gb/train.csv'
+    test: 's3://zs-datasets/large-reddit-score-5gb/test.csv'
+    target: y
+    type: regression
+
+- name: comp-mercari-price-suggestion-challenge
+  dataset:
+    train: 's3://zs-datasets/comp-mercari-price-suggestion-challenge/train.csv'
+    test: 's3://zs-datasets/comp-mercari-price-suggestion-challenge/test.csv'
+    target: y
+    type: regression
+
+- name: big-deloitte-ml-5
+  dataset:
+    train: 's3://zs-datasets/big-deloitte-ml-5/train.csv'
+    test: 's3://zs-datasets/big-deloitte-ml-5/test.csv'
+    target: y
+    type: regression
+
+
+- name: large-taxifare-5gb
+  dataset:
+    train: 's3://zs-datasets/large-taxifare-5gb/train.csv'
+    test: 's3://zs-datasets/large-taxifare-5gb/test.csv'
+    target: y
+    type: regression
+
+- name: large-lendingc-5gb
+  dataset:
+    train: 's3://zs-datasets/large-lendingc-5gb/train.csv'
+    test: 's3://zs-datasets/large-lendingc-5gb/test.csv'
+    target: y
+    type: binary
+
+
