@@ -9,31 +9,45 @@ seeds = [22, 92, 54, 86, 41]
 config_paths = [
     "sample_configs/canvas_tabular_cloud_configs.yaml",
 ]
+# frameworks = [
+#     "AutoGluon_bq_ds_auto:example",
+#     "AutoGluon_gq_ds_auto:example",
+#     "AutoGluon_hq_ds_auto:example",
+#     "AutoGluon_bq_ds:example",
+#     "AutoGluon_hq_ds:example",
+#     "AutoGluon_gq_ds:example",
+#     "AutoGluon_bq:example",
+#     "AutoGluon_hq:example",
+#     "AutoGluon_gq:example",
+#     "AutoGluon_gq_refit:example",
+#     "AutoGluon_gq_refit_ds:example",
+#     "AutoGluon_mq:example",
+# ]
+
+
 frameworks = [
-    "AutoGluon_bq_ds_auto:example",
-    "AutoGluon_gq_ds_auto:example",
-    "AutoGluon_hq_ds_auto:example",
-    "AutoGluon_bq_ds:example",
-    "AutoGluon_hq_ds:example",
-    "AutoGluon_gq_ds:example",
-    "AutoGluon_bq:example",
-    "AutoGluon_hq:example",
-    "AutoGluon_gq:example",
-    "AutoGluon_gq_refit:example",
-    "AutoGluon_gq_refit_ds:example",
-    "AutoGluon_mq:example",
-
+    "AutoGluon_bq_ds_auto",
+    "AutoGluon_gq_ds_auto",
+    "AutoGluon_hq_ds_auto",
+    "AutoGluon_bq_ds",
+    "AutoGluon_hq_ds",
+    "AutoGluon_gq_ds",
+    "AutoGluon_bq",
+    "AutoGluon_hq",
+    "AutoGluon_gq",
+    "AutoGluon_gq_refit",
+    "AutoGluon_gq_refit_ds",
+    "AutoGluon_mq",
 ]
-
 amlb_constraints = [
      "48c120m",
+     "48c720m",
+     "48c1440m",
      "48c45m",
      "48c60m",
      "48c90m",
      "48c15m",
      "48c30m",
-     "48c720m",
-     "48c1440m",
 ]
 
 
