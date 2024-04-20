@@ -1,0 +1,139 @@
+base: &base
+  url: s3://zs-datasets/5g_datasets/{name}/{split}.csv
+  test_split_name: test
+  splits:
+    - train
+    - test
+    - val
+  label_columns:
+    - y
+  metric: acc
+  problem_type: multiclass
+  columns_to_drop:
+
+
+adform:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+alster-books:
+  <<: *base
+
+claims-severity:
+  <<: *base
+  problem_type: regression
+  metric: r2
+  
+defect:
+  <<: *base
+
+energy-molecule:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+kitsune:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+news:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+adfraud:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+census-income:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+criteo-kaggle:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+fmnist:
+  <<: *base
+
+nyc-yolanda:
+  <<: *base
+
+op100-189355:
+  <<: *base
+
+op100-7592:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+
+openml-167130:
+  <<: *base
+
+openml-167218:
+  <<: *base
+
+
+openml-3947:
+  <<: *base
+
+openml-4769:
+  <<: *base
+
+openml-9955:
+  <<: *base
+
+taxifare:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+deloitte-ml:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+energy-molecule:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+higgs:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+lending-club-loan:
+  <<: *base
+
+nyc-record2vec-plugs:
+  <<: *base
+  problem_type: binary
+  metric: f1
+
+nyc-yolanda:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+reddit-score:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+taxifare:
+  <<: *base
+  problem_type: regression
+  metric: r2
+
+large-codes-5gb:
+  <<: *base
+
+

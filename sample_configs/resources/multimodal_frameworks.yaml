@@ -1,6 +1,7 @@
 base: &base
-  repo: https://github.com/Innixma/autogluon.git
-  version: fix_refit_full_crash_oom
+  repo: https://github.com/autogluon/autogluon.git
+  version: master
+
 
 AutoGluon_bq:
   <<: *base
@@ -12,14 +13,23 @@ AutoGluon_bq:
     _leaderboard_test: True
 
 
+AutoGluon_bq_ds_auto:
+  <<: *base
+  params:
+    presets: "best_quality"
+    use_bag_holdout: "auto"
+    dynamic_stacking: "auto"
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info', 'models']
+    _leaderboard_test: True
+
 AutoGluon_bq_ds:
   <<: *base
   params:
     presets: best_quality
     calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
+    _save_artifacts: ['leaderboard', 'info', 'models']
     _leaderboard_test: True
-    
 
 AutoGluon_hq:
   <<: *base
@@ -27,17 +37,21 @@ AutoGluon_hq:
     presets: high_quality
     dynamic_stacking: False
     calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
 
+
+AutoGluon_hq_ds_auto:
+  <<: *base
+  params:
+    presets: "high_quality"
+    use_bag_holdout: "auto"
+    dynamic_stacking: "auto"
+    calibrate_decision_threshold: True
 
 AutoGluon_hq_ds:
   <<: *base
   params:
     presets: high_quality
     calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
 
 
 AutoGluon_gq:
@@ -48,47 +62,7 @@ AutoGluon_gq:
     refit_full: False
     set_best_to_refit_full: False
     calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
 
-AutoGluon_gq_ds:
-  <<: *base
-  params:
-    presets: good_quality
-    refit_full: False
-    set_best_to_refit_full: False
-    calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
-
-
-AutoGluon_gq_refit:
-  <<: *base
-  params:
-    presets: good_quality
-    dynamic_stacking: False
-    calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
-  
-
-AutoGluon_gq_refit_ds:
-  <<: *base
-  params:
-    presets: good_quality
-    calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
-
-
-AutoGluon_mq:
-  <<: *base
-  params:
-    presets: medium_quality
-    num_bag_sets: 1
-    calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info', 'models']
-    _leaderboard_test: True
 
 AutoGluon_gq_ds_auto:
   <<: *base
@@ -97,25 +71,81 @@ AutoGluon_gq_ds_auto:
     use_bag_holdout: "auto"
     dynamic_stacking: "auto"
     calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
-    _leaderboard_test: True
 
-AutoGluon_hq_ds_auto:
+
+AutoGluon_gq_ds:
   <<: *base
   params:
-    presets: "high_quality"
-    use_bag_holdout: "auto"
-    dynamic_stacking: "auto"
+    presets: good_quality
+    refit_full: False
+    set_best_to_refit_full: False
+    calibrate_decision_threshold: True
+
+
+AutoGluon_gq_refit:
+  <<: *base
+  params:
+    presets: good_quality
+    dynamic_stacking: False
+    calibrate_decision_threshold: True
+  
+
+AutoGluon_gq_refit_ds:
+  <<: *base
+  params:
+    presets: good_quality
+    calibrate_decision_threshold: True
+
+
+AutoGluon_mq:
+  <<: *base
+  params:
+    presets: medium_quality
+    num_bag_sets: 1
+    calibrate_decision_threshold: True
+    
+
+AutoGluon_lightgbm:
+  <<: *base
+  params:
+    hyperparameters: {"GBM": {}}
+    fit_weighted_ensemble: False
     calibrate_decision_threshold: True
     _save_artifacts: ['leaderboard', 'info']
     _leaderboard_test: True
-    
-AutoGluon_bq_ds_auto:
+
+AutoGluon_xgboost:
   <<: *base
   params:
-    presets: "best_quality"
-    use_bag_holdout: "auto"
-    dynamic_stacking: "auto"
+    hyperparameters: {"XGB": {}}
+    fit_weighted_ensemble: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_catboost:
+  <<: *base      
+  params:
+    hyperparameters: {"CAT": {}}
+    fit_weighted_ensemble: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_randomforest:
+  <<: *base      
+  params:
+    hyperparameters: {"RF": {}}
+    fit_weighted_ensemble: False
+    calibrate_decision_threshold: True
+    _save_artifacts: ['leaderboard', 'info']
+    _leaderboard_test: True
+
+AutoGluon_constantpredictor:
+  <<: *base       
+  params:
+    hyperparameters: {"DUMMY": {}}
+    fit_weighted_ensemble: False
     calibrate_decision_threshold: True
     _save_artifacts: ['leaderboard', 'info']
     _leaderboard_test: True

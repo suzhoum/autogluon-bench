@@ -4,54 +4,44 @@ seeds = []
 for i in range(n_experiments):
     seeds.append(random.randint(0, 100))
 
-seeds = [22, 92, 54, 86, 41]
-
-config_paths = [
-    "sample_configs/canvas_tabular_cloud_configs.yaml",
-]
-# frameworks = [
-#     "AutoGluon_bq_ds_auto:example",
-#     "AutoGluon_gq_ds_auto:example",
-#     "AutoGluon_hq_ds_auto:example",
-#     "AutoGluon_bq_ds:example",
-#     "AutoGluon_hq_ds:example",
-#     "AutoGluon_gq_ds:example",
-#     "AutoGluon_bq:example",
-#     "AutoGluon_hq:example",
-#     "AutoGluon_gq:example",
-#     "AutoGluon_gq_refit:example",
-#     "AutoGluon_gq_refit_ds:example",
-#     "AutoGluon_mq:example",
-# ]
-
-
-frameworks = [
-    "AutoGluon_bq_ds_auto",
-    "AutoGluon_gq_ds_auto",
-    "AutoGluon_hq_ds_auto",
-    "AutoGluon_bq_ds",
-    "AutoGluon_hq_ds",
-    "AutoGluon_gq_ds",
-    "AutoGluon_bq",
-    "AutoGluon_hq",
-    "AutoGluon_gq",
-    "AutoGluon_gq_refit",
-    "AutoGluon_gq_refit_ds",
-    "AutoGluon_mq",
-]
-amlb_constraints = [
-     "48c120m",
-     "48c720m",
-     "48c1440m",
-     "48c45m",
-     "48c60m",
-     "48c90m",
-     "48c15m",
-     "48c30m",
-]
-
-
 module = "tabular_reg"
+seeds = [22, 92, 54, 86, 41]
+seeds = [22]
+config_paths = [
+    #"sample_configs/canvas_tabular_cloud_configs.yaml",
+    "sample_configs/canvas_tabular_5g_cloud_configs.yaml",
+]
+frameworks = [
+    # 'AutoGluon_mq',
+    # 'AutoGluon_bq', 
+    'AutoGluon_bq_ds_auto',
+    'AutoGluon_bq_ds', 
+    #'AutoGluon_hq', 
+    'AutoGluon_hq_ds_auto',
+    'AutoGluon_hq_ds', 
+    # 'AutoGluon_gq', 
+    #'AutoGluon_gq_ds_auto',
+    #'AutoGluon_gq_ds', 
+    # 'AutoGluon_gq_refit', 
+    # 'AutoGluon_gq_refit_ds', 
+    'AutoGluon_lightgbm',
+    'AutoGluon_xgboost',
+    'AutoGluon_catboost',
+    'AutoGluon_randomforest',
+    'AutoGluon_constantpredictor',
+]
+
+constraints = [
+    # '48c15m', 
+    # '48c30m', 
+    # '48c45m', 
+    # '48c60m', 
+    '48c90m', 
+    '48c120m',
+    '48c720m',
+    # '48c1440m'
+]
+
 
 import yaml
 import os
@@ -61,24 +51,22 @@ config_root = "./temp_configs"
 os.makedirs(config_root, exist_ok=True)
 
 for framework in frameworks:
-    os.makedirs(f"{config_root}/{framework}", exist_ok=True)
-    for amlb_constraint in amlb_constraints:
-        config_dir = f"{config_root}/{framework}/{amlb_constraint}"
+    config_dir = f"{config_root}/{framework}"
+    os.makedirs(config_dir, exist_ok=True)
+    for constraint in constraints:
+        config_dir = f"{config_root}/{framework}/{constraint}"
         os.makedirs(config_dir, exist_ok=True)
-
+    
         for config_path in config_paths:
             with open(config_path, "r") as f:
                 configs = yaml.safe_load(f)
-                configs["amlb_constraint"] = amlb_constraint
+                configs["constraint"] = constraint
                 configs["framework"] = framework
                 configs["module"] = module
-                # configs["custom_dataloader"]["shot"] = shot
-                job_name = f"{configs['benchmark_name']}-{framework}-{amlb_constraint}"
-                job_name = job_name.replace("_", "-")
-                job_name = job_name.replace(":", "-")
-                configs["benchmark_name"] = job_name
+                configs["benchmark_name"] = f"{configs['benchmark_name']}"
                 new_config_path = os.path.join(config_dir, os.path.basename(config_path))
                 with open(new_config_path, "w") as new_f:
+                    print("saving config: ", new_config_path)
                     yaml.dump(configs, new_f)
                 print("Running config: ", new_config_path)
                 command = ["agbench", "run", new_config_path]
