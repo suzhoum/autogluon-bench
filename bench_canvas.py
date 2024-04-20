@@ -43,6 +43,9 @@ constraints = [
 ]
 
 
+
+module = "tabular_reg"
+
 import yaml
 import os
 import subprocess

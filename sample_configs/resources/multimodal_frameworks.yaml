@@ -30,6 +30,7 @@ AutoGluon_bq_ds:
     calibrate_decision_threshold: True
     _save_artifacts: ['leaderboard', 'info', 'models']
     _leaderboard_test: True
+    
 
 AutoGluon_hq:
   <<: *base
@@ -46,6 +47,7 @@ AutoGluon_hq_ds_auto:
     use_bag_holdout: "auto"
     dynamic_stacking: "auto"
     calibrate_decision_threshold: True
+
 
 AutoGluon_hq_ds:
   <<: *base
@@ -128,8 +130,7 @@ AutoGluon_catboost:
   params:
     hyperparameters: {"CAT": {}}
     fit_weighted_ensemble: False
-    calibrate_decision_threshold: True
-    _save_artifacts: ['leaderboard', 'info']
+    _save_artifacts: ['leaderboard', 'info', 'models']
     _leaderboard_test: True
 
 AutoGluon_randomforest:
