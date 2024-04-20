@@ -47,7 +47,7 @@ class TabularDataLoader:
         self.data_path = os.path.join(base_dir, self.name, f"{split}{file_extention}")
         download(url, path=self.data_path)
         if file_extention == ".csv":
-            self.data = pd.read_csv(self.data_path)
+            self.data = pd.read_csv(self.data_path, escapechar='\\')
         elif file_extention == ".pq":
             self.data = pd.read_parquet(self.data_path)
         else:
